@@ -14,6 +14,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Utility {
+    /**
+     * 解析和处理服务器返回的省级数据
+     * @param response
+     * @return
+     */
     public static boolean handleProvinceRequest(String response){
         if(!TextUtils.isEmpty(response)){
             try {
@@ -29,11 +34,16 @@ public class Utility {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            return false;
         }
         return false;
     }
+
+    /**
+     * 解析和处理服务器返回的市级数据
+     * @param response
+     * @param provinceId
+     * @return
+     */
 
     public static boolean handleCityResponse(String response,int provinceId){
         if(!TextUtils.isEmpty(response)){
@@ -46,12 +56,11 @@ public class Utility {
                     city.setCityCode(cityObject.getInt("id"));
                     city.setProvinceId(provinceId);
                     city.save();
-                    return true;
                 }
+                return true;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
         return false;
     }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.weather.db.City;
 import com.example.weather.db.County;
 import com.example.weather.db.Province;
+import com.example.weather.gson.Weather;
 import com.example.weather.util.HttpUtil;
 import com.example.weather.util.Utility;
 
@@ -91,10 +92,19 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 }else if(currentLevel==LEVEL_COUNTY){
                     String weatherId=countyList.get(position).getWeatherId();
-                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(getActivity() instanceof MainActivity){
+                        Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                    else if(getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity=(WeatherActivity)getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
+
                 }
             }
         });
@@ -134,7 +144,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
     /**
-     * 查询全国所有的市，优先从数据库查询，如果没有查询到再去服务器上查询
+     * 查询全省所有的市，优先从数据库查询，如果没有查询到再去服务器上查询
      */
     private void queryCities(){
         titleText.setText(selectedProvince.getProvinceName());
@@ -155,7 +165,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
     /**
-     * 查询全国所有的县，优先从数据库查询，如果没有查询到再去服务器上查询
+     * 查询全市所有的县，优先从数据库查询，如果没有查询到再去服务器上查询
      */
     private void queryCounties(){
         titleText.setText(selectedCity.getCityName());
